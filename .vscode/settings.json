@@ -1,0 +1,42 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "charliermarsh.ruff",
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    }
+  },
+  "files.exclude": {
+    "**/__pycache__/": true,
+    ".mypy_cache/": true,
+    "*.pyc": true,
+    ".pytest_cache": true,
+    ".coverage": true,
+    ".git/": false,
+    ".venv/": false,
+    ".ruff_cache/": true
+  },
+  "python.languageServer": "Pylance",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticMode": "off",
+  "python.defaultInterpreterPath": ".venv/bin/python",
+  "ruff.configurationPreference": "filesystemFirst",
+  "ruff.organizeImports": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "remote.autoForwardPortsFallback": 0,
+  "python.analysis.autoFormatStrings": true,
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.diagnosticsSource": "Pylance",
+  "python.analysis.disableTaggedHints": true,
+  "cSpell.words": [
+    "LESZNOE",
+    "Otostolik"
+  ],
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+}

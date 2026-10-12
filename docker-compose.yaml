@@ -1,0 +1,31 @@
+services:
+  gas:
+    build:
+      context: .
+    restart: unless-stopped
+    environment:
+      - PROXY_PATH_PREFIX=
+      - ENVIRONMENT=prod
+    networks:
+      - gas
+    env_file:
+     - .env
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:8.2-alpine
+    restart: unless-stopped
+    networks:
+      - gas
+    env_file:
+     - .env
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
+
+networks:
+  gas:
+    external: true

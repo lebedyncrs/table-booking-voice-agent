@@ -1,0 +1,58 @@
+stages:
+  - deploy
+  - cleanup
+
+deploy:
+  stage: deploy
+  variables:
+    COMPOSE_FILE: "/opt/gas/docker-compose-${ENVIRONMENT}.yaml"
+    COMPOSE_PROJECT_NAME: ${ENVIRONMENT}
+  script: |
+    echo "name: ${ENVIRONMENT}" > ${COMPOSE_FILE}
+    sed "s|^\(.*PROXY_PATH_PREFIX\)=.*$|\1=${PROXY_PATH_PREFIX}|" docker-compose.yaml >> ${COMPOSE_FILE}
+    sed -i "s|^\(.*ENVIRONMENT\)=.*$|\1=${ENVIRONMENT}|" ${COMPOSE_FILE}
+    docker compose -f docker-compose.yaml build
+    docker compose pull
+    docker compose up -d
+    docker image prune -f
+  environment:
+    name: ${GITLAB_ENVIRONMENT}
+    url: ${ENVIRONMENT_URL}
+    on_stop: shutdown
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      variables:
+        ENVIRONMENT: prod
+        GITLAB_ENVIRONMENT: ${ENVIRONMENT}
+        ENVIRONMENT_URL: https://${DOMAIN}
+    - if: '$CI_MERGE_REQUEST_IID'
+      when: manual
+      variables:
+        ENVIRONMENT: mr${CI_MERGE_REQUEST_IID}
+        GITLAB_ENVIRONMENT: review/${ENVIRONMENT}
+        ENVIRONMENT_URL: https://${DOMAIN}/${ENVIRONMENT}
+        PROXY_PATH_PREFIX: ${ENVIRONMENT}
+    - when: never
+
+
+shutdown:
+  stage: cleanup
+  variables:
+    COMPOSE_FILE: "/opt/gas/docker-compose-${ENVIRONMENT}.yaml"
+  script:
+    - docker compose down
+    - docker image prune -f
+    - docker volume prune -f
+    - rm ${COMPOSE_FILE}
+  environment:
+    name: ${GITLAB_ENVIRONMENT}
+    action: stop
+  rules:
+    - if: '$CI_MERGE_REQUEST_IID'
+      variables:
+        ENVIRONMENT: mr${CI_MERGE_REQUEST_IID}
+        GITLAB_ENVIRONMENT: review/mr${CI_MERGE_REQUEST_IID}
+      when: manual
+      allow_failure: true
+    - when: never

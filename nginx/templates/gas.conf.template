@@ -1,0 +1,14 @@
+server {
+    listen 443 ssl;
+    server_name ${NGINX_DOMAIN};
+
+    include snippets/ssl.conf;
+
+    location / {
+        proxy_pass http://prod-${NGINX_APP_SERVICE_NAME}-1:8000;
+    }
+
+    location ~ ^/(stage|dev|mr\d+)/(.*) {
+        proxy_pass http://$1-${NGINX_APP_SERVICE_NAME}-1:8000/$2;
+    }
+}

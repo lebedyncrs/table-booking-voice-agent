@@ -1,0 +1,91 @@
+[project]
+name = "gas"
+version = "0.1.0"
+description = "gastronomy agent service"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.116.1",
+    "fastapi-mcp>=0.4.0",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.10.1",
+    "redis>=6.4.0",
+    "sentry-sdk>=2.38.0",
+    "uvicorn>=0.35.0",
+]
+
+[dependency-groups]
+dev = [
+    "pyrefly>=0.29.1",
+    "ruff>=0.12.8",
+]
+
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+indent-width = 4
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "B",
+    "C4",
+    "UP",
+    "ANN",
+    "N",
+    "D",
+]
+
+ignore = [
+    "E501",
+    "ANN101",
+    "ANN102",
+    "ANN201",
+    "ANN202",
+    "ANN204",
+    "D100",
+    "D102",
+    "D104",
+    "D105",
+    "D205",
+    "D212",
+    "D101",
+    "D103",
+    "D107",
+]
+
+exclude = [
+    ".git",
+    "__pycache__",
+    "venv",
+    "build",
+    "dist",
+    "*.pyc",
+    "*.egg-info",
+]
+fixable = ["ALL"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.pyrefly]
+project-includes = [
+    "gas",
+]
+
+project-excludes = [
+    "**/__pycache__/*",
+    "**/*.pyc",
+    "tests/*",
+]
+type-checking-mode = "strict"

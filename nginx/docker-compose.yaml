@@ -1,0 +1,22 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    networks:
+      - gas
+    ports:
+     - 443:443
+    environment:
+      - NGINX_ENTRYPOINT_LOCAL_RESOLVERS=1
+      - NGINX_ENVSUBST_FILTER=^NGINX_
+    env_file:
+     - ../.env
+    volumes:
+     - ./templates:/etc/nginx/templates:ro
+     - ./certs:/etc/nginx/certs:ro
+     - ./snippets:/etc/nginx/snippets:ro
+
+networks:
+  gas:
+    external: true
